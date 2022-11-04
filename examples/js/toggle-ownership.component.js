@@ -51,9 +51,17 @@ AFRAME.registerComponent('toggle-ownership', {
   },
 
   onKeyUp(e) {
-    if (e.keyCode !== 13 /* enter */) {
-      return;
+    if (e.keyCode === 81 /* Q */) {
+      console.log(`Q key pressed. keyCode: ${e.keyCode}`);
+      if (NAF.utils.transferOwnership(this.el, 'scene')) {
+        console.log(`Transferred ownership to scene for ${this.el.id}`);
+      }
     }
+
+    if (e.keyCode !== 13 /* enter */) {
+      console.log(`Enter key not pressed. keyCode: ${e.keyCode}`);
+      return;
+    }    
 
     if(NAF.utils.takeOwnership(this.el)) {
       this.el.setAttribute('toggle-ownership', { direction: this.data.direction * -1 });

@@ -233,6 +233,34 @@ AFRAME.registerComponent('networked', {
     return false;
   },
 
+  transferOwnership: function(newOwner) {
+    if (!this.isMine()) {
+      NAF.log.error("Cannot transfer ownership of entity that is not mine");
+      return false;
+    }    
+    const owner = this.data.owner;  
+    if (owner === newOwner) {
+      NAF.log.error("Cannot transfer ownership to the same client");
+      return false;
+    }
+    const lastOwnerTime = this.lastOwnerTime;
+    const now = NAF.connection.getServerTime();  
+    if (lastOwnerTime < now) {
+      this.lastOwnerTime = now;
+      this.removeLerp();
+      this.el.setAttribute('networked', { owner: newOwner });
+      this.syncAll();
+
+      this.onOwnershipChangedEvent.oldOwner = owner;
+      this.onOwnershipChangedEvent.newOwner = newOwner;
+      // emit ownership-changed before ownership-lost
+      this.el.emit(this.OWNERSHIP_LOST, this.onOwnershipLostEvent);
+      this.el.emit(this.OWNERSHIP_CHANGED, this.onOwnershipChangedEvent);
+      
+      return true;
+    }
+  },
+
   wasCreatedByNetwork: function() {
     return !!this.el.firstUpdateData;
   },

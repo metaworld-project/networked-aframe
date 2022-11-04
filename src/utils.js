@@ -89,6 +89,20 @@ module.exports.takeOwnership = function(entity) {
   return curEntity.components.networked.takeOwnership();
 };
 
+module.exports.transferOwnership = function(entity, newOwner) {
+  let curEntity = entity;
+
+  while(curEntity && curEntity.components && !curEntity.components.networked) {
+    curEntity = curEntity.parentNode;
+  }
+
+  if (!curEntity || !curEntity.components || !curEntity.components.networked) {
+    throw new Error("Entity does not have and is not a child of an entity with the [networked] component ");
+  }
+
+  return curEntity.components.networked.transferOwnership(newOwner);
+};
+
 module.exports.isMine = function(entity) {
   let curEntity = entity;
 
