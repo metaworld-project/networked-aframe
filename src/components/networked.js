@@ -253,9 +253,10 @@ AFRAME.registerComponent('networked', {
 
       this.onOwnershipChangedEvent.oldOwner = owner;
       this.onOwnershipChangedEvent.newOwner = newOwner;
-      // emit ownership-changed before ownership-lost
-      this.el.emit(this.OWNERSHIP_LOST, this.onOwnershipLostEvent);
       this.el.emit(this.OWNERSHIP_CHANGED, this.onOwnershipChangedEvent);
+      
+      this.onOwnershipLostEvent.newOwner = newOwner;
+      this.el.emit(this.OWNERSHIP_LOST, this.onOwnershipLostEvent);      
       
       return true;
     }
