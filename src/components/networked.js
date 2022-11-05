@@ -470,7 +470,14 @@ AFRAME.registerComponent('networked', {
     // The reason for the latter case is so the object will still be
     // properly instantiated if the owner leaves. (Since the object lifetime
     // is tied to the creator.)
-    if (this.data.owner && this.isMine()) return true;
+    if (this.data.owner){
+      if (this.isMine()){
+        return true;
+      }
+      if (this.data.owner === 'scene'){
+        return true;
+      }
+    } 
     if (!this.createdByMe()) return false;
 
     const clients = NAF.connection.getConnectedClients();
@@ -494,6 +501,7 @@ AFRAME.registerComponent('networked', {
   /* Receiving updates */
 
   networkUpdate: function(entityData) {
+    NAF.log.write('networkUpdate', entityData);
     // Avoid updating components if the entity data received did not come from the current owner.
     if (entityData.lastOwnerTime < this.lastOwnerTime ||
           (this.lastOwnerTime === entityData.lastOwnerTime && this.data.owner > entityData.owner)) {
