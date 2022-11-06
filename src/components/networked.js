@@ -500,8 +500,7 @@ AFRAME.registerComponent('networked', {
 
   /* Receiving updates */
 
-  networkUpdate: function(entityData) {
-    NAF.log.write('networkUpdate', entityData);
+  networkUpdate: function(entityData) {    
     // Avoid updating components if the entity data received did not come from the current owner.
     if (entityData.lastOwnerTime < this.lastOwnerTime ||
           (this.lastOwnerTime === entityData.lastOwnerTime && this.data.owner > entityData.owner)) {
